@@ -1,0 +1,19 @@
+create table if not exists blogs (
+id varchar(50) primary key not null ,
+user_name varchar(50),
+user_id varchar(50)not null,
+user_image varchar(500),
+name varchar(50),
+summary varchar(200),
+content text,
+created_at float);
+
+
+create table if not exists comments (
+id varchar(50) primary key not null ,
+user_name varchar(50),
+user_id varchar(50)not null,
+user_image varchar(500),
+blog_id varchar(50),
+content text,
+created_at float);
