@@ -1,35 +1,60 @@
-import os,sys,subprocess
-from time import time
-from rater import rate
+from multiprocessing import Process
+import os,sys,time
+
+from app import run_server
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+
+def log(s):
+    print('[Monitor] %s' % s)
+
+class MyFileSystemEventHander(FileSystemEventHandler):
+
+    def __init__(self, fn):
+        super(MyFileSystemEventHander, self).__init__()
+        self.restart = fn
+
+    def on_any_event(self, event):
+        if event.src_path.endswith('.py'):
+            log('Python source file changed: %s' % event.src_path)
+            self.restart()
+
+process=None
+
+def kill_process():
+    global process
+    if process:
+        log('Kill process [%s]...' % process.pid)
+        process.terminate()
+        log('Process ended with code %s.' % process.exitcode)
+        process = None
+
+def start_process():
+    global process
+    process = Process(target=run_server)
+    process.start()
 
 
-
-def start_task(comm,path,argv,times=10):
-    command=comm+' '+path+" "+argv
-    student_id=path.split('/')[-1].split('.')[0]
-
-    time_spent,score=[],[]
-    for i in range(times):
-        time_start=time()
-        process = subprocess.Popen(command, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr)
-        time_end = time()
-        time_spent.append(time_end-time_start)
-        score.append(rate(student_id))
-
-    with open('./final_score/'+student_id,'wa')as f:
-        f.write(student_id+'的运行结果:/n')
-        for i in range(times):
-            f.write('运行结果'+i+':时间花费'+time_spent[i],',运行结果：'+score[i]+'/n')
-
-        f.write('/n/n')
+def restart_process():
+    kill_process()
+    start_process()
 
 
-
-
+def start_watch(path,callback):
+    observer=Observer()
+    observer.schedule(MyFileSystemEventHander(restart_process),path,recursive=True)
+    observer.start()
+    log('Watching directory %s...' % path)
+    start_process()
+    try:
+        while True:
+            time.sleep(0.5)
+    except KeyboardInterrupt:
+        observer.stop()
+    observer.join()
 
 
 if __name__=='__main__':
-
-    argv=sys.argv
-    print(argv)
+    path=os.path.abspath('.')
+    start_watch(path,None)
 

@@ -3,6 +3,7 @@ db={
     'password': 'admin',
     'autocommit': True,
     'db': 'TEST1',
+    'host':'172.16.124.201',
 
 }
 

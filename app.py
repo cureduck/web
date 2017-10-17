@@ -48,6 +48,7 @@ async def init(loop):
     logging.info('server started...')
     return srv
 
-loop=asyncio.get_event_loop()
-loop.run_until_complete(init(loop))
-loop.run_forever()
+def run_server():
+    loop=asyncio.get_event_loop()
+    loop.run_until_complete(init(loop))
+    loop.run_forever()
