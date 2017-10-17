@@ -1,0 +1,64 @@
+{%extends '__base__.html' %}
+{%block title%} login {% endblock %}
+
+{%block beforehead%}
+<script>
+$(function (){
+		var postt=new Vue({
+			el:"#form_login",
+			data:{
+				name:"",
+				passwd:""
+			},
+			methods:{
+				login:function(){
+					$.ajax({
+					    type:'POST',
+					    url:'/api/authenticate',
+					    data:JSON.stringify({
+            					name:this.name,
+			            		passwd:this.passwd
+					          }),
+    					contentType: "application/json; charset=utf-8",
+	    				success:function(request){
+		        			alert('登陆成功'),
+				    	    location.assign('/api/blogs')
+					    },
+				    	dataType:'json'})
+				}
+			}
+		})
+	})
+</script>
+
+
+{%endblock%}
+
+{%block content%}
+
+<form id="form1" runat="server" enctype="multipart/form-data" >
+    <div>
+    <a id="addAttach" href="#">添加上传文件</a>
+    <div id="files">
+    <input type="file" name="f1"/>
+    </div>
+    <asp:Button ID="btnSend" runat="server" Text="发送" onclick="btnSend_Click"
+    </div>
+    </form>
+ <script>
+     protected void btnSend_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < Request.Files.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(Request.Files[i].FileName))
+                {
+                    Request.Files[i].SaveAs
+                   (Path.Combine(Server.MapPath("files"), Path.GetFileName(Request.Files
+                                                          [i].FileName)));
+                }
+            }
+        }
+</script>
+
+
+{%endblock%}

@@ -1,0 +1,65 @@
+{%extends '__base__.html' %}
+{%block title%} blog {% endblock %}
+
+
+{%block beforehead%}
+<script >
+$(function(){
+    var vm=new Vue({
+        el:'#article',
+        data:{},
+        methods:{
+            get_blogs:function(){
+               location.assign('/blogs')
+            }
+        }
+    })
+})
+
+
+</script>
+
+{%endblock%}
+
+
+{%block content%}
+<div  class="uk-width-medium-3-4 " id="article">
+
+        <article class="uk-article">
+            <h1 class="uk-article-title">{{{ blog.blog.name }}} </h1>
+            <p class="uk-article-leader">{{{blog.blog.summary}}}</p>
+            <hr class="uk-article-divider">
+            <p>{{{blog.blog.content}}}</p>
+
+
+        </article>
+
+
+    <br>
+    <hr class="uk-divider">
+    <br>
+
+
+    <article class="uk-comment">
+    <header class="uk-comment-header">
+        <img class="uk-comment-avatar" src="/static/img/placeholder_avatar.svg" alt="">
+        <h4 class="uk-comment-title">...</h4>
+        <div class="uk-comment-meta">...</div>
+    </header>
+    <div class="uk-comment-body">...</div>
+    </article>
+
+<button class="uk-button" @click="get_blogs" >返回 </button>
+</div>
+
+<div class="uk-width-medium-1-4">
+    <div class="uk-container-center"><img src="/static/img/user.png"> </div>
+    <p> 作者: {{{blog.blog.user_name}}}</p>
+</div>
+
+
+
+
+
+
+{%endblock%}

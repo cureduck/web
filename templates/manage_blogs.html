@@ -1,0 +1,97 @@
+{%extends '__base__.html' %}
+{%block title%} blogs {% endblock %}
+
+{%block beforehead%}
+<script>
+{% if user.admin==False %}
+$(function(){
+    alert('fuck off!')
+    location.assign('/blogs')
+})
+
+{%else%}
+$(function (){
+
+        $.ajaxSettings.async = false;
+        var blogs_all='';
+        $.getJSON('../api/blog/all',function(data){
+            blogs_all=data.blogs
+            for  ( var i in blogs_all){
+                    blogs_all[i].url='/blog/edit/'+blogs_all[i].id
+
+                }
+        })
+		var postt=new Vue({
+			el:"#articles",
+			data:{
+                blogs:blogs_all,
+                dd:'测试按钮 '
+			},
+			methods:{
+				show:function(){
+					alert(this.blogs[0].url)
+                },
+                delete:function(id){
+                    var path='/api/delete/blog/'+id
+                    $.get(path,function(data){})
+				}
+
+
+			}
+
+
+
+		})
+	})
+
+
+{%endif%}
+</script>
+
+
+{%endblock%}
+
+{%block content%}
+<div  class="uk-width-medium-3-4" id="articles">
+    <ul>
+    <li v-for="blog in blogs">
+        <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+            <article class="uk-article">
+                <div class="uk-grid">
+                    <div class="uk-width-medium-3-4">
+                        <h3 class="uk-article-title"><a href={{blog.url}}>{{ blog.name }} </a></h3>
+                    </div>
+                    <div class="uk-width-medium-1-4">
+                        <button class="uk-button" @click="delete(blog.id)">删除</button>
+                    </div>
+                </div>
+                <p class="uk-article-meta">作者:{{blog.user_name}}</p>
+                <hr class="uk-article-divider">
+                <p class="uk-article-leader">摘要:{{blog.summary}}</p>
+                <p>{{blog.content}}</p>
+            </article>
+
+        </div>
+    </li>
+    </ul>
+
+
+
+
+
+
+<button @click="show" >{{dd}}</button>
+
+
+</div>
+
+<div class="uk-width-medium-1-4">
+    <div> hello</div>
+</div>
+
+
+
+
+
+
+{%endblock%}
