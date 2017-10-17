@@ -7,7 +7,7 @@ from aiohttp import web
 from jinja2 import Environment,FileSystemLoader
 import orm
 from response_factory import response_factory
-
+from config import db
 
 from coroweb import add_routes,add_static
 
@@ -37,7 +37,7 @@ def index(request):
 
 
 async def init(loop):
-    _pool=await orm.create_pool(loop)
+    _pool=await orm.create_pool(loop,**db)
     app=web.Application(loop=loop,middlewares=[response_factory])
     init_jinja2(app)
     add_static(app)
