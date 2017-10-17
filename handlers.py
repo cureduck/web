@@ -2,6 +2,7 @@ from coroweb import get,post,auth
 from models import User,Blog,Comment
 import json
 import logging; logging.basicConfig(level=logging.INFO)
+import os
 import hashlib
 from aiohttp import web
 import time
@@ -61,3 +62,10 @@ async def cloud(id):
         '__template__':'111.html'
     }
     return dic
+
+
+@get('/updatecode')
+@auth('Admin')
+async def updatecode():
+    os.system('git pull')
+    return b'git pulled'
