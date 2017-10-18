@@ -1,9 +1,12 @@
 db={
     'user': 'root',
-    'password': 'admin',
+    'password': '123',
     'autocommit': True,
     'db': 'TEST1',
     'host':'172.16.124.201',
+    'port':3306,
+
+
 
 }
 
